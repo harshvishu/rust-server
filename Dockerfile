@@ -1,48 +1,24 @@
 # Build stage
-FROM rust:1.43 as builder
+FROM rust:1.67 AS build
 
 WORKDIR /usr/src/rust-server
+COPY . .
 
-# Install dependencies for the project
-RUN USER=root cargo init --bin .
-COPY Cargo.toml Cargo.lock ./
-RUN cargo build --release && rm src/*.rs
+RUN cargo install --path .
 
-# Copy the rest of the source code and build the application
-COPY src ./src
-COPY public ./public
-RUN rm -f target/release/deps/rust_server* \
-    && cargo build --release
+# Final stage
+FROM debian:bullseye-slim
 
-# Production stage
-FROM debian:buster-slim
+RUN apt-get update && \
+    apt-get install -y openssl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set the timezone and create a new user
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
-    && groupadd -r appuser && useradd --no-log-init -r -g appuser appuser
+WORKDIR /usr/local/bin/
+COPY --from=build /usr/local/cargo/bin/rust-server .
 
-ENV APP_USER=appuser \
-    APP_HOME=/usr/src/app \
-    TZ=Etc/UTC
+WORKDIR /app
+COPY public/ public/
 
-# Install dependencies for the production environment
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy the built binary and the public folder to the production environment
-COPY --from=builder /usr/src/rust-server/target/release/rust-server ${APP_HOME}/rust-server
-COPY --from=builder /usr/src/rust-server/public ${APP_HOME}/public
-
-# Set ownership and permissions
-RUN chown -R $APP_USER:$APP_USER ${APP_HOME} \
-    && chmod 755 ${APP_HOME}
-
-USER $APP_USER
-WORKDIR ${APP_HOME}
-# Expose the port
 EXPOSE 3000
 
-# Start the application
-CMD ["./rust-server"]
+CMD ["rust-server"]
