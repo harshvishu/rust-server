@@ -10,6 +10,7 @@ RUN cargo build --release && rm src/*.rs
 
 # Copy the rest of the source code and build the application
 COPY src ./src
+COPY public ./public
 RUN rm -f target/release/deps/rust_server* \
     && cargo build --release
 
