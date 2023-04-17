@@ -4,15 +4,16 @@ FROM rust:1.67 AS build
 WORKDIR /usr/src/rust-server
 COPY . .
 
-RUN cargo install --path .
+RUN cargo install --path . && \
+    strip /usr/local/cargo/bin/rust-server
 
 # Final stage
-FROM debian:bullseye-slim
+FROM alpine:latest
 ENV PUBLIC_PATH /app/public
 
-RUN apt-get update && \
-    apt-get install -y openssl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add --no-cache openssl && \
+    rm -rf /var/cache/apk/*
 
 WORKDIR /usr/local/bin/
 COPY --from=build /usr/local/cargo/bin/rust-server .
