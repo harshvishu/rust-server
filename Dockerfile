@@ -8,6 +8,7 @@ RUN cargo install --path .
 
 # Final stage
 FROM debian:bullseye-slim
+ENV PUBLIC_PATH /app/public
 
 RUN apt-get update && \
     apt-get install -y openssl ca-certificates && \
@@ -17,7 +18,8 @@ WORKDIR /usr/local/bin/
 COPY --from=build /usr/local/cargo/bin/rust-server .
 
 WORKDIR /app
-COPY public/ public/
+COPY public public
+RUN chmod -R 644 public
 
 EXPOSE 3000
 
