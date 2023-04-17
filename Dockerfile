@@ -33,7 +33,7 @@ RUN apt-get update \
 
 # Copy the built binary and the public folder to the production environment
 COPY --from=builder /usr/src/rust-server/target/release/rust-server ${APP_HOME}/rust-server
-COPY --from=builder /usr/src/rust-server/public ${APP_HOME}/public
+COPY --from=builder /usr/src/rust-server/public ${APP_HOME}/rust-server/public
 
 # Set ownership and permissions
 RUN chown -R $APP_USER:$APP_USER ${APP_HOME} \
