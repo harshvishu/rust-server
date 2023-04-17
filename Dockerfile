@@ -31,8 +31,9 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the built binary to the production environment
+# Copy the built binary and the public folder to the production environment
 COPY --from=builder /usr/src/rust-server/target/release/rust-server ${APP_HOME}/rust-server
+COPY --from=builder /usr/src/rust-server/public ${APP_HOME}/public
 
 # Set ownership and permissions
 RUN chown -R $APP_USER:$APP_USER ${APP_HOME} \
