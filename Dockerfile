@@ -30,7 +30,7 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /rust-docker-web/target/release/rust-server ${APP}/rust-server
+COPY --from=builder /rust-server/target/release/rust-server ${APP}/rust-server
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
