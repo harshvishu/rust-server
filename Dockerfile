@@ -23,6 +23,7 @@ RUN ls -l /usr/local/bin/ && \
 WORKDIR /app
 COPY public public
 RUN chmod -R 644 public
+RUN chmod +x /usr/local/bin/rust-server
 
 EXPOSE 3000
 
