@@ -17,13 +17,12 @@ RUN apk add --no-cache openssl ca-certificates && \
 WORKDIR /usr/local/bin/
 COPY --from=build /usr/local/cargo/bin/rust-server .
 
-RUN ls -l /usr/local/bin/ && \
+RUN chmod +x rust-server && \
     if [ ! -f "/usr/local/bin/rust-server" ]; then echo "Error: rust-server binary not found"; exit 1; fi
 
 WORKDIR /app
 COPY public public
 RUN chmod -R 644 public
-RUN chmod +x /usr/local/bin/rust-server
 
 EXPOSE 3000
 
