@@ -7,7 +7,7 @@ COPY . .
 RUN cargo install --path .
 
 # Final stage
-FROM alpine:latest
+FROM alpine:latest AS final
 ENV PUBLIC_PATH /app/public
 
 RUN apk add --no-cache openssl ca-certificates && \
