@@ -1,0 +1,38 @@
+name: Build and Package
+
+on: [push]
+  #on:
+  #  push:
+  #    branches:
+  #      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package Binaries
+        run: echo "No packaging step needed for build"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: release
+          path: target/release
+   
