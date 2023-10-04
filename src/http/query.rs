@@ -31,15 +31,15 @@ impl<'buf> From<&'buf str> for Query<'buf> {
             }
 
             data.entry(key)
-            .and_modify(|existing: &mut Value | match existing {
-                Value::Single(prev) => {
-                    *existing = Value::Multiple(vec![val, prev]);
-                },
-                Value::Multiple(vec) => {
-                    vec.push(val);
-                }
-            })
-            .or_insert(Value::Single(val));
+                .and_modify(|existing: &mut Value| match existing {
+                    Value::Single(prev) => {
+                        *existing = Value::Multiple(vec![val, prev]);
+                    }
+                    Value::Multiple(vec) => {
+                        vec.push(val);
+                    }
+                })
+                .or_insert(Value::Single(val));
         }
 
         Query { data }
