@@ -87,5 +87,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: target/release
+          path: rust-server/target/release
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
