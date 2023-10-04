@@ -1,3 +1,4 @@
+use super::Headers;
 use super::Query;
 use crate::http::method::{Method, MethodError};
 use std::convert::TryFrom;
@@ -5,14 +6,13 @@ use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::str;
 use std::str::Utf8Error;
-use super::Headers;
 
 #[derive(Debug)]
 pub struct Request<'buf> {
     path: &'buf str,
     query: Option<Query<'buf>>,
     method: Method,
-    headers: Headers<'buf>
+    headers: Headers<'buf>,
 }
 
 impl<'buf> Request<'buf> {
@@ -46,11 +46,9 @@ impl<'buf> TryFrom<&'buf [u8]> for Request<'buf> {
         // GET / HTTP/1.1\r\n
         let request = str::from_utf8(buf)?;
 
-        
         let (method, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
         let (mut path, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
         let (protocol, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
-        
 
         if protocol != "HTTP/1.1" {
             return Err(ParseError::InvalidProtocol);
@@ -80,7 +78,7 @@ impl<'buf> TryFrom<&'buf [u8]> for Request<'buf> {
             path,
             query,
             method,
-            headers
+            headers,
         })
     }
 }

@@ -32,12 +32,8 @@ impl Server {
                         Ok(_) => {
                             println!("Received a request: \n{}", String::from_utf8_lossy(&buffer));
                             let response = match Request::try_from(&buffer[..]) {
-                                Ok(request) => {
-                                    handler.handle_request(&request)
-                                }
-                                Err(e) => {
-                                    handler.handle_bad_request(&e)
-                                }
+                                Ok(request) => handler.handle_request(&request),
+                                Err(e) => handler.handle_bad_request(&e),
                             };
 
                             if let Err(e) = response.send(&mut stream) {

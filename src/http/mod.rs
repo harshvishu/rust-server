@@ -1,14 +1,14 @@
-pub use request::Request;
+pub use headers::Headers;
 pub use method::Method;
+pub use query::{Query, Value as QueryValue};
 pub use request::ParseError;
-pub use query::{Query,Value as QueryValue};
+pub use request::Request;
 pub use response::Response;
 pub use status_code::StatusCode;
-pub use headers::Headers;
 
-mod request;
+mod headers;
 mod method;
 mod query;
+mod request;
 mod response;
 mod status_code;
-mod headers;
